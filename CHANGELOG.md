@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.1] - 2025-03-05
+
+### Changed
+
+- Update project documentation
+
 ## [2.3.0] - 2025-03-02
 
 ### Added

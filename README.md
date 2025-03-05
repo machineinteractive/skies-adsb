@@ -1,6 +1,6 @@
 # skies-adsb
 
-### ✈️ [Current Version: 2.3.0](CHANGELOG.md) 🚁
+### ✈️ [Current Version: 2.3.1](CHANGELOG.md) 🚁
 
 ![Screenshot](docs/screenshot.png)
 
@@ -98,7 +98,7 @@ Andre Thais CFI
 
 [Frank E. Hernandez](https://github.com/CodeMinion)
 
-I would also like to thank the authors and creators of the hardware, libraries, tools, and datasets used to create this project. None of this would have been possible without their creations.
+I would also like to thank the authors and creators of the datasets, hardware, libraries, tools, and tutorials used to create this project. None of this would have been possible without their creations.
 
 # Attribution
 

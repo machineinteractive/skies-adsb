@@ -152,9 +152,9 @@ If you make local changes to the skies-adsb web app and want to deploy them to y
 
 ```shell
 cd /path/to/skies-adsb
-source .venv/bin/activate
 cd maps
-python3 build-map-layers.py
+chmod +x build-map-layers.sh
+./build-map-layers.sh
 ```
 
 2. Build the web app:
