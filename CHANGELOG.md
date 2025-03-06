@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.2] - 2025-03-05
+
+### Changed
+
+- Fixed typos in INSTALL.md
+
 ## [2.3.1] - 2025-03-05
 
 ### Changed

@@ -2,7 +2,7 @@
 
 This guide provides step-by-step instructions for installing skies-adsb. The instructions outlined here apply to both:
 
-- New Raspberry Pi installations running 64-bit OS
+- New 64-bit Raspberry Pi installations
 - Localhost or headless installations on existing systems
 
 Follow each step carefully to set up the core dependencies and configuration needed to deploy and run the application.
@@ -80,7 +80,7 @@ deactivate
 
 # Step 3 - Install Node.js and npm
 
-The skies-adsb web app requires Node.js and npm. If you already have these installed, you can skip to Step 7.
+The skies-adsb web app requires Node.js and npm. If you already have these installed, you can skip to **Step 4**.
 
 For a clean Node.js installation, use nvm (Node Version Manager) - the recommended way to install and manage Node.js:
 
@@ -94,7 +94,7 @@ https://github.com/nvm-sh/nvm
 nvm install node
 ```
 
-3. Logout and login again before continuing to Step 4
+3. Logout and login again before continuing to **Step 4**
 
 # Step 4 - Initialize the Node.js Dependencies
 
