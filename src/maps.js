@@ -2,15 +2,17 @@ import * as THREE from 'three'
 import { Text } from 'troika-three-text'
 import * as UTILS from './utils.js'
 
-const AERODROME_LABEL_HEIGHT = 2.0
+const METERS_TO_FEET = 3.28084
+
+const AERODROME_LABEL_HEIGHT = 4.0
 const AERODROME_LABEL_FONT_SIZE = 2
 
 const TEXT_COLOR = new THREE.Color(0xed225d)
 const TEXT_FONT = "./static/Orbitron-VariableFont_wght.ttf"
 
-export const LAYER_AERODROMES = "aerodromes"
+export const LAYER_AERODROMES = "aerodrome"
 export const LAYER_ORIGINS = "origins"
-export const LAYER_RUNWAYS = "runways"
+export const LAYER_RUNWAYS = "runway"
 export const LAYER_AIRSPACE_CLASS_B = "airspace_class_b"
 export const LAYER_AIRSPACE_CLASS_C = "airspace_class_c"
 export const LAYER_AIRSPACE_CLASS_D = "airspace_class_d"
@@ -107,6 +109,14 @@ export async function buildMapLayers(scene) {
   try {
     console.log("MAPS: building map layers...")
 
+    // build map labels layer separately as we need to get the origin data from another json file
+    console.log("\tbuilding layer: origin labels")
+    const originLabelsLayerGroup = await buildOriginLabelsLayer(scene, ORIGINS_DATA)
+    scene.add(originLabelsLayerGroup)
+    LAYER_GROUPS[LAYER_ORIGINS] = originLabelsLayerGroup
+    originLabelsLayerGroup.visible = isLayerVisible(LAYER_ORIGINS)
+    originLabelsLayerGroup.needsUpdate = true
+
     // build map layers
     Object.entries(LAYERS_GEOJSON).forEach(async ([layerName, fileName]) => {
       const group = await buildMapLayer(scene, layerName, fileName)
@@ -115,14 +125,6 @@ export async function buildMapLayers(scene) {
       group.visible = isLayerVisible(layerName)
       group.needsUpdate = true
     })
-
-    // build map labels layer separately as we need to get the origin data from another json file
-    console.log("\tbuilding layer: origin labels")
-    const originLabelsLayerGroup = await buildOriginLabelsLayer(scene, ORIGINS_DATA)
-    scene.add(originLabelsLayerGroup)
-    LAYER_GROUPS[LAYER_ORIGINS] = originLabelsLayerGroup
-    originLabelsLayerGroup.visible = isLayerVisible(LAYER_ORIGINS)
-    originLabelsLayerGroup.needsUpdate = true
 
     console.log("MAPS: map layers built...")
   } catch (e) {
@@ -149,6 +151,11 @@ const roadsLineMaterial = new THREE.LineBasicMaterial({
 const urbanAreasLineMaterial = new THREE.LineBasicMaterial({
   color: 0x708090,
 })
+
+const runwayLineMaterial = new THREE.LineBasicMaterial({
+  color: 0xfffffff
+})
+
 
 async function buildMapLayer(scene, layerName, fileName) {
 
@@ -181,6 +188,9 @@ async function buildMapLayer(scene, layerName, fileName) {
     case LAYER_ROADS:
       material = roadsLineMaterial
       break
+    case LAYER_RUNWAYS:
+      material = runwayLineMaterial
+      break
     default:
       material = mapDefaultLineMaterial
       break
@@ -193,6 +203,7 @@ async function buildMapLayer(scene, layerName, fileName) {
 
     switch (geoJson.name) {
       case LAYER_AERODROMES:
+      case LAYER_RUNWAYS:
         childGroup.userData.id = feature.properties.icao ?? feature.properties.iata ?? feature.properties.faa ?? feature.properties.ref
         break
 
@@ -206,6 +217,14 @@ async function buildMapLayer(scene, layerName, fileName) {
     }
 
     switch (geoJson.name) {
+
+      case LAYER_AERODROMES:
+      case LAYER_RUNWAYS:
+        const elevation = (feature.properties.ele ?? feature.properties.ele_right ?? 0.0) * METERS_TO_FEET * UTILS.DEFAULT_SCALE
+        childGroup.position.set(0, elevation, 0)
+        childGroup.userData.elevation = elevation
+        break
+
       case LAYER_URBAN_AREAS:
         childGroup.position.set(0, -0.15, 0)
         break
@@ -217,6 +236,25 @@ async function buildMapLayer(scene, layerName, fileName) {
         break
       case LAYER_AIRSPACE_CLASS_D:
         childGroup.position.set(0, -2, 0)
+        break
+    }
+
+    switch (geoJson.name) {
+      case LAYER_AERODROMES:
+        const childElevation = childGroup.userData.elevation ?? 0.0
+        // skip if elevation is 0
+        if (childElevation > 0.0) {
+          const steps = Math.floor(childElevation / 1.5)
+          for (let i = 0; i < steps; i++) {
+            const interpolatedElevation = (childElevation / steps) * i
+            const clone = childGroup.clone()
+            const cloneMaterial = clone.children[0].material.clone()
+            cloneMaterial.color.multiplyScalar((i / steps / 1.5))
+            clone.children[0].material = cloneMaterial
+            clone.position.y = interpolatedElevation
+            parentGroup.add(clone)
+          }
+        }
         break
     }
 
@@ -328,15 +366,30 @@ async function getOriginsData() {
         ?? element.tags['faa:lid']
         ?? element.tags?.ref
 
-      const center = element.center
+
       if (!id) {
         console.warn("\tNo ref attribute or ICAO/IATA/FAA compatible id found for use as origin id:\n\t", element)
         return
       }
 
+      const center = element.center
+
+      if (!element.tags?.ele) {
+        console.warn(`\tNo ele attribute found for origin id: ${id}. Defaulting to 0 meters elevation.\n\t`)
+      }
+
+      // OSM elevation is in meters so convert elevation from meters to feet
+      let elevation = parseFloat(element.tags?.ele ?? 0.0)
+      if (isNaN(elevation)) {
+        console.warn(`\tInvalid ele attribute found for origin id: ${id}. Defaulting to 0 meters elevation.\n\t`)
+        elevation = 0.0
+      }
+      elevation *= METERS_TO_FEET
+
       data.push({
         id: id,
         center: center,
+        elevation: elevation
       })
 
     })
@@ -347,11 +400,12 @@ async function getOriginsData() {
   }
 }
 
-function buildOriginObject(name, lat, lon) {
+function buildOriginObject(name, lat, lon, elevation) {
   return {
     name: name,
     lat: lat,
     lon: lon,
+    elevation: elevation * UTILS.DEFAULT_SCALE
   }
 }
 
@@ -361,15 +415,23 @@ async function buildOrigins(originsData) {
 
   // set default origin
   console.log("\tBuilding default origin...")
-  const defaultLat = import.meta.env.SKIES_ADSB_DEFAULT_ORIGIN_LATITUDE
-  const defaultLon = import.meta.env.SKIES_ADSB_DEFAULT_ORIGIN_LONGITUDE
+  const defaultLat = parseFloat(import.meta.env.SKIES_ADSB_DEFAULT_ORIGIN_LATITUDE)
+  const defaultLon = parseFloat(import.meta.env.SKIES_ADSB_DEFAULT_ORIGIN_LONGITUDE)
+  let defaultElevation = parseFloat(import.meta.env.SKIES_ADSB_DEFAULT_ORIGIN_ELEVATION_METERS_OPTIONAL)
 
-  if (isNaN(parseFloat(defaultLat)) || isNaN(parseFloat(defaultLon))) {
-    console.error("ERROR: Default Origin Latitude and/or Longitude not set in .env file")
+  if (isNaN(defaultLat) || isNaN(parseFloat(defaultLon))) {
+    console.error("ERROR: Invalid Default Origin Latitude and/or Longitude in .env file.")
     return false
   }
 
-  ORIGINS[DEFAULT_ORIGIN] = buildOriginObject(DEFAULT_ORIGIN, defaultLat, defaultLon)
+  if (isNaN(defaultElevation)) {
+    console.warn("WARNING: Invalid Default Origin Elevation in .env file. Defaulting to 0 meters.")
+    defaultElevation = 0.0
+  }
+
+  defaultElevation *= METERS_TO_FEET
+
+  ORIGINS[DEFAULT_ORIGIN] = buildOriginObject(DEFAULT_ORIGIN, defaultLat, defaultLon, defaultElevation)
 
   // build other origins  
   console.log("\tBuilding additional origins...")
@@ -382,7 +444,8 @@ async function buildOrigins(originsData) {
     ORIGINS[origin.id] = buildOriginObject(
       origin.id,
       origin.center.lat,
-      origin.center.lon
+      origin.center.lon,
+      origin.elevation
     )
   })
 
@@ -398,7 +461,8 @@ async function buildOriginLabelsLayer(scene, originsData) {
     group.userData.center = origin.center
     group.userData.type = LAYER_ORIGINS
     const [x, y] = UTILS.getXY([origin.center.lon, origin.center.lat])
-    group.position.set(x * UTILS.DEFAULT_SCALE, 0, y * UTILS.DEFAULT_SCALE)
+    const z = origin.elevation * UTILS.DEFAULT_SCALE
+    group.position.set(x * UTILS.DEFAULT_SCALE, z, y * UTILS.DEFAULT_SCALE)
 
     const label = new Text()
     label.text = origin.id

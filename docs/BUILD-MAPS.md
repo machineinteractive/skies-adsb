@@ -139,11 +139,11 @@ See below for a description of the generated files.
 
 #### OpenStreetMap Data
 
-| File               | Description                              |
-| ------------------ | ---------------------------------------- |
-| aerodromes.geojson | Aerodrome geometry data                  |
-| origins.json       | Aerodrome origins as lat/lon coordinates |
-| runways.geojson    | Runway data                              |
+| File              | Description                              |
+| ----------------- | ---------------------------------------- |
+| aerodrome.geojson | Aerodrome geometry data                  |
+| origins.json      | Aerodrome origins as lat/lon coordinates |
+| runway.geojson    | Runway data                              |
 
 ### Creating Custom Map Layers With QGIS
 
@@ -198,7 +198,8 @@ Origins are defined using JSON objects with this format:
         "lon": <YOUR LONGITUDE GOES HERE>
       },
       "tags": {
-        "ref": "<YOUR LABEL GOES HERE>"
+        "ref": "<YOUR LABEL GOES HERE>",
+        "ele": "<OPTIONAL ELEVATION IN METERS MSL - DEFAULTS TO 0 meters>"
       }
     }
 ```
@@ -224,7 +225,8 @@ Then place each `Origin` object into the element array. For example:
         "lon": -80.2918816
       },
       "tags": {
-        "ref": "KMIA"
+        "ref": "KMIA",
+        "ele": 3
       }
     },
     {
@@ -233,7 +235,8 @@ Then place each `Origin` object into the element array. For example:
         "lon": -80.1497953
       },
       "tags": {
-        "ref": "KFLL"
+        "ref": "KFLL",
+        "ele": 2
       }
     }
   ]

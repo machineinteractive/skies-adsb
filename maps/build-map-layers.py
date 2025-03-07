@@ -211,8 +211,8 @@ def generate_aerodrome_runway_geometry(osm_value, output_file_name):
 
 
 OVERPASS_QUERIES = [
-    ("aerodrome", "aerodromes.geojson"),
-    ("runway", "runways.geojson"),
+    ("aerodrome", "aerodrome.geojson"),
+    ("runway", "tmp_runway.geojson"),
 ]
 
 for osm_value, output_file_name in OVERPASS_QUERIES:
@@ -223,6 +223,22 @@ for osm_value, output_file_name in OVERPASS_QUERIES:
         print(f"\tSkipping Overpass query for {osm_value}...")
         with open(output_file_name, 'w') as f:
             json.dump({}, f)
+
+
+print(f"\tMerge Aerodromes and Runways...")
+
+tmp_runway_geojson = f"{OUTPUT_DIR}/{OVERPASS_QUERIES[1][1]}"
+
+gdf_aerodromes = gpd.read_file(f"{OUTPUT_DIR}/{OVERPASS_QUERIES[0][1]}")
+gdf_runways = gpd.read_file(tmp_runway_geojson)
+merged_gdf = gpd.sjoin(gdf_runways, gdf_aerodromes, how='inner', predicate='within')
+merged_gdf.to_file(f"{OUTPUT_DIR}/runway.geojson", driver="GeoJSON")
+
+try:    
+    os.remove(tmp_runway_geojson)
+    print(f"Deleted: {file}")
+except Exception as e:
+    print(f"Error cleaning directory {OUTPUT_DIR}: {e}")
 
 
 print("============================================")

@@ -68,6 +68,8 @@ MAPS.LAYER_NAMES.forEach(layer => {
 
 DAT_GUI_SETTINGS[SETTINGS_ORIGIN] = []
 
+let datGuiOriginController = null
+
 console.table("[DAT GUI Settings]: ")
 console.table(DAT_GUI_SETTINGS)
 
@@ -193,6 +195,9 @@ const CAMERA_INITIAL_ASPECT = UTILS.sizes.width / UTILS.sizes.height
 
 const orbitCamera = new THREE.PerspectiveCamera(
   UTILS.CAMERA_FOV, CAMERA_INITIAL_ASPECT, UTILS.CAMERA_NEAR, UTILS.CAMERA_FAR)
+
+// TODO need to adjust camera Y positions and target based on origin elevation here... or somewhere...
+
 orbitCamera.position.z = UTILS.FOLLOW_CAM_DISTANCE
 
 const followCamera = orbitCamera.clone()
@@ -639,8 +644,19 @@ function resetCameraToHome() {
   }
 
   camera = cameras[UTILS.CAMERA_MODE_ORBIT]
-  controls.enabled = true
+
   controls.reset()
+
+  const key = datGuiOriginController?.getValue()
+  const elevation = MAPS.ORIGINS[key]?.elevation ?? 0.0
+
+  camera.cam.position.set(0,
+    elevation + UTILS.CAMERA_ORBIT_START_ELEVATION_ADJUST,
+    UTILS.CAMERA_ORBIT_START_DISTANCE
+  )
+  controls.target.set(0, elevation, 0)
+  controls.update()
+  controls.enabled = true
 }
 
 function resetOrbitCamera(target) {
@@ -707,10 +723,14 @@ function updateAutoOrbitCamera(elapsedTime, deltaTime) {
     horizontalAngle
   )
 
+  const key = datGuiOriginController?.getValue()
+  const elevation = MAPS.ORIGINS[key]?.elevation ?? 0.0
+
   const worldPosition = new THREE.Vector3()
   autoOrbitCameraObject.getWorldPosition(worldPosition)
   autoOrbitCamera.position.copy(worldPosition)
-  autoOrbitCamera.lookAt(0, 0, 0)
+  autoOrbitCamera.position.y += elevation
+  autoOrbitCamera.lookAt(0, elevation, 0)
 }
 
 function resetAutoOrbitCamera() {
@@ -810,6 +830,8 @@ async function updateOriginAndRebuildMapLayers(key) {
 // Initialize Simulation - start rendering, 
 //
 
+let curOriginKey = null
+
 async function initSimulation() {
   console.log("[main] - initSimulation")
 
@@ -823,7 +845,7 @@ async function initSimulation() {
   }
 
   // build controller for changing origins
-  const datGuiOriginController = gui.add(
+  datGuiOriginController = gui.add(
     DAT_GUI_SETTINGS,
     SETTINGS_ORIGIN,
     Object.keys(MAPS.ORIGINS)
