@@ -267,8 +267,8 @@ let originY = undefined
 
 export async function setOrigin(lonLat) {
   let [mx, my] = sphericalMercator.forward(lonLat)
-  originX = Math.abs(mx)
-  originY = Math.abs(my)
+  originX = mx
+  originY = my
   console.log("[UTIL] setOrigin:", lonLat, mx, my, originX, originY)
 }
 
@@ -278,19 +278,10 @@ export async function setOrigin(lonLat) {
 export function getXY(lonLat) {
   let [xx, yy] = sphericalMercator.forward(lonLat)
 
+  xx -= originX
+  yy -= originY
+
   //console.log(lonLat)
-
-  if (xx < 0) {
-    xx += originX
-  } else {
-    xx -= originX
-  }
-
-  if (yy < 0) {
-    yy += originY
-  } else {
-    yy -= originY
-  }
 
   return [xx, -yy]
 }
