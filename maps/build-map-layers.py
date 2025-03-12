@@ -23,6 +23,8 @@ parser = argparse.ArgumentParser(description="Build map layers for an lat/lon or
 parser.add_argument("--origin-lat", type=float, default=None, help="Latitude of origin")
 parser.add_argument("--origin-lon", type=float, default=None, help="Longitude of origin")
 parser.add_argument("--origin-distance", type=float, default=DEFAULT_ORIGIN_DISTANCE, help="Distance from origin (in degrees) used to build bounding box")
+parser.add_argument("--origin-left", type=float, default=None, help="Distance from origin and to the left (in degrees) used to build bounding box")
+parser.add_argument("--origin-top", type=float, default=None, help="Distance from origin and to the top (in degrees) used to build bounding box")
 parser.add_argument("--show-geopandas-warnings", type=bool, default=False, help="Show Geopandas warnings")
 parser.add_argument("--build-110m-maps", type=bool, default=False, help="Build 110m maps instead of 10m maps")
 parser.add_argument("--skip-aerodromes", type=bool, default=False, help="Skip building aerodrome layers and origins")
@@ -45,9 +47,6 @@ else:
     print()
     exit(1)
 
-print("############################################")
-print(f"\nDefault origin latitude: {ORIGIN_LAT} longitude: {ORIGIN_LON}\n")
-print("============================================")
 
 
 #
@@ -57,13 +56,31 @@ print("============================================")
 #
 if not args.show_geopandas_warnings:
     warnings.filterwarnings("ignore")
+    
+ORIGIN_LEFT = None
+ORIGIN_TOP = None
+
+if args.origin_left is not None and args.origin_top is not None:
+    ORIGIN_LEFT = args.origin_left
+    ORIGIN_TOP = args.origin_top
+else:
+    ORIGIN_LEFT = args.origin_distance
+    ORIGIN_TOP = args.origin_distance
+    
+ORIGIN_LEFT = abs(ORIGIN_LEFT)
+ORIGIN_TOP = abs(ORIGIN_TOP)
 
 # setup Bounding box for clipping
-WEST = ORIGIN_LON - args.origin_distance
-EAST = ORIGIN_LON + args.origin_distance
-NORTH = ORIGIN_LAT + args.origin_distance
-SOUTH = ORIGIN_LAT - args.origin_distance
+WEST = ORIGIN_LON - ORIGIN_LEFT
+EAST = ORIGIN_LON + ORIGIN_LEFT
+NORTH = ORIGIN_LAT + ORIGIN_TOP
+SOUTH = ORIGIN_LAT - ORIGIN_TOP
 
+print("############################################")
+print(f"\nDefault Origin lat: {ORIGIN_LAT} lon: {ORIGIN_LON}")
+print(f"Origin Left: {ORIGIN_LEFT} Top: {ORIGIN_TOP}")
+print(f"Bounding box: ({WEST}, {NORTH}) to ({EAST}, {SOUTH})\n")
+print("============================================")
 #
 # Convert any instances of Polygon and MultiPolygon to LineString or MultiLineString as needed
 #

@@ -80,13 +80,25 @@ After building the layers, you can run the skies-adsb simulation.
 
 ### Large Coverage Areas
 
-To adjust the coverage area:
+You can expand map coverage beyond the default ±2 degrees using these parameters:
+
+- `--origin-distance <value>`: Expands coverage uniformly in all directions
+- `--origin-left <value>` and `--origin-top <value>`: Creates rectangular coverage areas
+
+Examples below show using these parameters.
 
 ```shell
 cd /path/to/skies-adsb
 cd maps
 chmod +x build-map-layers.sh
 ./build-map-layers.sh --origin-distance 5
+```
+
+```shell
+cd /path/to/skies-adsb
+cd maps
+chmod +x build-map-layers.sh
+./build-map-layers.sh --origin-left 3 --origin-top 5
 ```
 
 **Important:**

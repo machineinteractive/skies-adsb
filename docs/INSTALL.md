@@ -319,9 +319,9 @@ The following variables in src/.env control the default automatic camera orbit b
 | SKIES_ADSB_DEFAULT_CAMERA_MODE                  | Initial camera mode at startup                 | string(ORBIT, or AUTO_ORBIT) | ORBIT   |
 | SKIES_ADSB_SETTINGS_AUTO_ORBIT_MIN_RADIUS       | Minimum orbit radius in world units            | Number >= 0                  | 25      |
 | SKIES_ADSB_SETTINGS_AUTO_ORBIT_MAX_RADIUS       | Maximum orbit radius in world units            | Number >= MIN_RADIUS         | 250     |
-| SKIES_ADSB_SETTINGS_AUTO_ORBIT_RADIUS_SPEED     | Speed of radius changes                        | Number between 0-0.5         | 0.009   |
-| SKIES_ADSB_SETTINGS_AUTO_ORBIT_VERTICAL_SPEED   | Speed of vertical movement                     | Number between 0.001-0.1     | 0.009   |
-| SKIES_ADSB_SETTINGS_AUTO_ORBIT_HORIZONTAL_SPEED | Speed of horizontal rotation                   | Number between 0.001-0.1     | 0.009   |
+| SKIES_ADSB_SETTINGS_AUTO_ORBIT_RADIUS_SPEED     | Speed of radius changes                        | Number between 0 and 0.5         | 0.009   |
+| SKIES_ADSB_SETTINGS_AUTO_ORBIT_VERTICAL_SPEED   | Speed of vertical movement                     | Number between -0.2 and 0.2     | 0.009   |
+| SKIES_ADSB_SETTINGS_AUTO_ORBIT_HORIZONTAL_SPEED | Speed of horizontal rotation                   | Number between -0.2 and 0.2     | 0.009   |
 | SKIES_ADSB_SETTINGS_AUTO_ORBIT_MIN_PHI          | Minimum camera phi angle (degrees from zenith) | Number >= 0                  | 0       |
 | SKIES_ADSB_SETTINGS_AUTO_ORBIT_MAX_PHI          | Maximum camera phi angle (degrees from zenith) | Number >= MIN_ALTITUDE       | 90      |
 
