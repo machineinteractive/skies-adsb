@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.4.1] - 2025-03-10
+
+### Changed
+
+- Fixed bug in UTILS.setOrigin and UTILS.getXY calculations for lat/lon offsets
+
 ## [2.4.0] - 2025-03-06
 
 ### Added
