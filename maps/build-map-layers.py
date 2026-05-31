@@ -236,7 +236,7 @@ merged_gdf.to_file(f"{OUTPUT_DIR}/runway.geojson", driver="GeoJSON")
 
 try:    
     os.remove(tmp_runway_geojson)
-    print(f"Deleted: {file}")
+    print(f"Deleted: {tmp_runway_geojson}")
 except Exception as e:
     print(f"Error cleaning directory {OUTPUT_DIR}: {e}")
 

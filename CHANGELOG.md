@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.4.2] - 2025-03-10
+
+### Changed
+
+- Fixed typo in maps/build-map-layers.py
+
 ## [2.4.1] - 2025-03-10
 
 ### Changed
