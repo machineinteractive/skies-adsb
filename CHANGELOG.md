@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.4.3] - 2025-03-11
+
+### Added
+
+- Added additional parameters to build-map-layers script for creating rectangular map bounding areas
+
+### Changed
+
+- Adjust range for auto-orbit camera vertical and horizontal speed settings from -0.2 to 0.2
+
 ## [2.4.2] - 2025-03-10
 
 ### Changed
