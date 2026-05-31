@@ -88,7 +88,7 @@ screenshot
 
 # Support This Project
 
-<a href="https://www.buymeacoffee.com/machineinteractive">![Buy me a coffee](docs/bmc-button.png)</a>
+<a href="https://www.buymeacoffee.com/machineinteractive" target="_blank">![Buy me a coffee](docs/bmc-button.png)</a>
 
 # Thanks
 
