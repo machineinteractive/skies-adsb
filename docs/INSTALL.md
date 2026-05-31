@@ -294,8 +294,8 @@ The following table lists the default visualization settings in **src/utils.js**
 | POLAR_GRID_COLOR_1              | "#81efff"     | Primary color for polar grid                           |
 | POLAR_GRID_COLOR_2              | "#81efff"     | Secondary color for polar grid                         |
 | AIRCRAFT_TTL                    | 15.0          | Aircraft time-to-live in seconds                       |
-| AIRCRAFT_TRAIL_UPDATE_FREQUENCY | 75            | Trail update frequency based on telemetry update count |
-| AIRCRAFT_MAX_TRAIL_POINTS       | 5000          | Maximum number of points in aircraft trail             |
+| AIRCRAFT_TRAIL_UPDATE_FREQUENCY | 100            | Trail update frequency based on telemetry update count |
+| AIRCRAFT_MAX_TRAIL_POINTS       | 2500          | Maximum number of points in aircraft trail             |
 
 These values can be modified in the **src/util.js** file to adjust the visualization behavior to your preferences. Note that some values are interdependent (e.g., SKYBOX_RADIUS must be less than or equal to half of CAMERA_FAR).
 
@@ -346,7 +346,7 @@ _Map Layers Controls_
 
 After completing the base installation, follow one of these guides to finalize your setup:
 
-- [Raspberry Pi Installation Guide](RPI-INSTALL-GUIDE.md) - Configure skies-adsb on a 64-bit Raspberry Pi ADS-B receiver
+- [Raspberry Pi Installation Guide](RPI-INSTALL-GUIDE.md) - Configure skies-adsb on a 64-bit Raspberry Pi
 - [Localhost+Headless Setup Guide](LOCALHOST-HEADLESS-SETUP-GUIDE.md) - Run skies-adsb locally or headless on your system
 
 Choose the guide that matches your deployment scenario.

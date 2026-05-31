@@ -18,7 +18,7 @@ The project uses data from:
 - FAA airspace data (Class B, C, D controlled airspace)
 - OpenStreetMap via Overpass API (aerodrome boundaries, origins, runways)
 
-A script at `maps/build-map-layers.py` automates building these GeoJSON layers.
+A script at `maps/build-map-layers.sh` automates building these GeoJSON layers.
 
 Custom map layers are also supported. Please review the automated process before consulting the appendix for custom layer instructions.
 
@@ -63,7 +63,7 @@ Please follow the steps in the install guide above before continuing.
 
 ## Step 2 - Build Map Layers for Your Location
 
-Map layers are built using the `build-map-layers.py` script. By default, it generates map layers covering a square area of ±2 degrees latitude/longitude around your default origin.
+Map layers are built using the `build-map-layers.sh` script. By default, it generates map layers covering a square area of ±2 degrees latitude/longitude around your default origin.
 
 Example for your default origin:
 
@@ -177,6 +177,18 @@ NOTE: The skies-adsb map will render all GeoJSON Polygons or MultiPolygons as Li
 
 #### How to define custom origins
 
+The `public/map-data/origins.json` file specifies the main reference points used by skies-adsb. This file is automatically created when you run `build-map-layers.sh`. If needed, you can create or modify it manually.
+
+Steps to manually create the origins.json file:
+
+```
+cd /path/to/skies-adsb
+cd public/map-data
+touch origins.json
+```
+
+**NOTE: each time you run the build-map-layers.sh script you will lose any custom changes to the origins.json file.**
+
 Origins are defined using JSON objects with this format:
 
 ```json
@@ -191,7 +203,9 @@ Origins are defined using JSON objects with this format:
     }
 ```
 
-Create a file called origins.json and create a JSON object with an array property called "elements":
+#### Create root JSON Object
+
+In the origins.json file create a JSON Object with an array property called "elements":
 
 ```json
 {
@@ -199,7 +213,7 @@ Create a file called origins.json and create a JSON object with an array propert
 }
 ```
 
-Place each Origin object into the element array. For example:
+Then place each `Origin` object into the element array. For example:
 
 ```json
 {
