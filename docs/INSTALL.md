@@ -164,11 +164,18 @@ To get your coordinates:
 4. Select "Show address"
 5. Note the latitude and longitude values
 
+Tip: To find the elevation of your location:
+
+1. On OpenStreetMap, select "Query Features" (right-click menu)
+2. Click a nearby aerodrome or point of interest
+3. Look for the "ele" (elevation) field in meters
+
 Add these coordinates to your **/path/to/skies-adsb/src/.env** file:
 
 ```shell
 SKIES_ADSB_DEFAULT_ORIGIN_LATITUDE=<DEFAULT ORIGIN LATITUDE>
 SKIES_ADSB_DEFAULT_ORIGIN_LONGITUDE=<DEFAULT ORIGIN LONGITUDE>
+SKIES_ADSB_DEFAULT_ORIGIN_ELEVATION_METERS_OPTIONAL=<OPTIONAL DEFAULT ORIGIN ELEVATION IN METERS MSL>
 ```
 
 Example using Miami International Airport (KMIA):
@@ -176,7 +183,10 @@ Example using Miami International Airport (KMIA):
 ```shell
 SKIES_ADSB_DEFAULT_ORIGIN_LATITUDE=25.7955406
 SKIES_ADSB_DEFAULT_ORIGIN_LONGITUDE=-80.2918816
+SKIES_ADSB_DEFAULT_ORIGIN_ELEVATION_METERS_OPTIONAL=3
 ```
+
+NOTE: **SKIES_ADSB_DEFAULT_ORIGIN_ELEVATION_METERS_OPTIONAL** is optional. If it is not set the default elevation will be set to 0 meters. If your default origin is an aerodrome it is strongly suggested you set the elevation otherwise you will see floating aircraft above the aerodrome.
 
 # Step 8 - Download Natural Earth Datasets
 

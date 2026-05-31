@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.4.0] - 2025-03-06
+
+### Added
+
+- Added aerodrome and runway elevation visualization with ground projections
+- Added `SKIES_ADSB_DEFAULT_ORIGIN_ELEVATION_METERS_OPTIONAL` environment variable
+- Updated orbit and auto-orbit cameras to handle origin elevation
+- Enhanced runway visibility with contrasting white material
+
+### Changed
+
+- Adjust height of origin labels
+- Adjust starting default orbit camera settings
+- Modified maps.js origins creation to include elevation data
+- Modified build-map-layers script to include spatial join of aerodrome and runway data for elevation information
+
 ## [2.3.2] - 2025-03-05
 
 ### Changed
