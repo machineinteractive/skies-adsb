@@ -17,15 +17,10 @@ The FlightAware AeroAPI integration is optional. When enabled, it allows fetchin
 
 | Dependency             | Description                                                |
 | ---------------------- | ---------------------------------------------------------- |
-| Python 3               | Scripting language for GeoJSON layer creation              |
+| Python 3               | Scripting language for running Flask                       |
 | flask                  | Web framework for Python                                   |
 | flask-cors             | Flask extension for handling Cross Origin Resource Sharing |
 | Requests               | HTTP library for Python                                    |
-| GeoPandas              | Geospatial data processing library                         |
-| osmtogeojson           | Converts Overpass API data to GeoJSON                      |
-| Natural Earth datasets | Pre-included map data (see update instructions below)      |
-| FAA airspace data      | Pre-included airspace data (see update instructions below) |
-| QGIS (optional)        | GUI tool for viewing and editing GeoJSON layers            |
 | VSCode (optional)      | Recommended IDE for Python development                     |
 
 # Step 1 - Create a Flask config.json file

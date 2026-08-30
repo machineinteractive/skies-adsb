@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.4.4] - 2026-08-30
+
+### Changed
+
+- Updated the Flask README dependency list
+
 ## [2.4.3] - 2025-03-11
 
 ### Added
